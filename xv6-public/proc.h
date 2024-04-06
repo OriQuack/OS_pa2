@@ -42,6 +42,7 @@ const int weight[40] = {
   423, 335, 272, 215, 172, 137, 110, 87,
   70, 56, 45, 36, 29, 23, 18, 15 
 };
+const uint MAX_UINT = 4294967295;
 // ~
 
 // Per-process state
@@ -59,11 +60,10 @@ struct proc {
   struct file *ofile[NOFILE];  // Open files
   struct inode *cwd;           // Current directory
   char name[16];               // Process name (debugging)
-	// MYCODE
+  // MYCODE
 	int nice;
   uint vruntime;
   uint timeslice;
-  uint runtime;
   uint starttick;
 	// ~
 };

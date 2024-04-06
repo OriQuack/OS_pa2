@@ -53,6 +53,15 @@ trap(struct trapframe *tf)
       ticks++;
       wakeup(&ticks);
       release(&tickslock);
+
+      // MYCODE
+      // Update vruntime and runtime
+      uint runtime = ticks - myproc()->starttick;
+      myproc()->vruntime += runtime * weight[20] / weight[myproc()->nice];
+      // If runtime >= timeslice, kill
+      if(runtime >= myproc()->timeslice)
+        myproc()->killed = 1;
+      // ~
     }
     lapiceoi();
     break;
