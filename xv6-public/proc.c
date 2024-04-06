@@ -91,6 +91,9 @@ found:
 
 	// MYCODE
 	p->nice = 20;
+  p->vruntime = 0;
+  p->runtime = 0;
+  // p->starttick = 0;
 	// ~
 
   release(&ptable.lock);
@@ -203,6 +206,13 @@ fork(void)
   np->sz = curproc->sz;
   np->parent = curproc;
   *np->tf = *curproc->tf;
+
+  // MYCODE
+  np->runtime = curproc->runtime;
+  np->vruntime = curproc->vruntime;
+  np->nice = curproc->nice;
+  np->starttick = curproc->starttick;
+  // ~
 
   // Clear %eax so that fork returns 0 in the child.
   np->tf->eax = 0;
@@ -334,26 +344,43 @@ scheduler(void)
     // Enable interrupts on this processor.
     sti();
 
+    int totalweight = 0;
+    struct proc *selp;
+    uint minvrt = 2147483647;
+    uint curtick = ticks;
     // Loop over process table looking for process to run.
     acquire(&ptable.lock);
     for(p = ptable.proc; p < &ptable.proc[NPROC]; p++){
       if(p->state != RUNNABLE)
         continue;
 
-      // Switch to chosen process.  It is the process's job
-      // to release ptable.lock and then reacquire it
-      // before jumping back to us.
-      c->proc = p;
-      switchuvm(p);
-      p->state = RUNNING;
-
-      swtch(&(c->scheduler), p->context);
-      switchkvm();
-
-      // Process is done running for now.
-      // It should have changed its p->state before coming back.
-      c->proc = 0;
+      // Get total weight
+      totalweight += weight[p->nice];
+      // Update vruntime and runtime (trap 안에서?)
+      p->runtime = curtick - p->starttick;
+      p->vruntime += p->runtime * weight[20] / weight[p->nice];
+      if(p->vruntime < minvrt)
+        selp = p;
+        minvrt = p->vruntime;
     }
+    
+    selp->timeslice = 10 * weight[selp->nice] / totalweight;
+    selp->starttick = ticks;
+
+    // Switch to chosen process.  It is the process's job
+    // to release ptable.lock and then reacquire it
+    // before jumping back to us.
+    c->proc = selp;
+    switchuvm(selp);
+    selp->state = RUNNING;
+
+    swtch(&(c->scheduler), selp->context);
+    switchkvm();
+
+    // Process is done running for now.
+    // It should have changed its p->state before coming back.
+    c->proc = 0;
+    
     release(&ptable.lock);
 
   }
