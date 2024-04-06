@@ -343,20 +343,26 @@ scheduler(void)
 
     // +MYCODE
     int totalweight = 0;
-    struct proc *selp;
     uint minvrt = MAX_UINT;
     uint curtick = ticks;
     // Loop over process table looking for process to run.
     acquire(&ptable.lock);
+    struct proc *selp = ptable.proc;
     for(p = ptable.proc; p < &ptable.proc[NPROC]; p++){
       if(p->state != RUNNABLE)
         continue;
 
       // Get total weight
       totalweight += weight[p->nice];
-      if(p->vruntime < minvrt)
+      if(p->vruntime < minvrt){
         selp = p;
         minvrt = p->vruntime;
+      }
+    }
+    // Skip invalid selp
+    if(selp->state != RUNNABLE){
+      release(&ptable.lock);
+      continue;
     }
     
     selp->timeslice = 10 * weight[selp->nice] / totalweight;
