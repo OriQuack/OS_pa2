@@ -35,8 +35,8 @@ struct context {
 enum procstate { UNUSED, EMBRYO, SLEEPING, RUNNABLE, RUNNING, ZOMBIE };
 
 // MYCODE
-int weight[40];
-uint MAX_UINT;
+extern const int weight[40];
+extern const uint MAX_UINT;
 // ~
 
 // Per-process state
