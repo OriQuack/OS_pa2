@@ -635,7 +635,7 @@ ps(int pid)
     uint curtick = ticks;
 	acquire(&ptable.lock);
 	if(pid == 0){
-		cprintf("%s\t\t%s\t%s\t\t%s\t%s\t%s\t%s\t%s %d\n",
+		cprintf("%s\t\t%s\t%s\t\t%s\t%s\t%s\t\t%s\t%s %d\n",
           "name", "pid", "state", "priority", "runtime/weight",
           "runtime", "vruntime", "tick", curtick * 1000);
 		for(p = ptable.proc; p < &ptable.proc[NPROC]; p++){
@@ -653,7 +653,7 @@ ps(int pid)
 	else{
 		for(p = ptable.proc; p < &ptable.proc[NPROC]; p++){
 			if(p->pid == pid){
-				cprintf("%s\t\t%s\t%s\t\t%s\t%s\t%s\t%s\t%s %u\n",
+				cprintf("%s\t\t%s\t%s\t\t%s\t%s\t%s\t\t%s\t%s %d\n",
                   "name", "pid", "state", "priority", "runtime/weight",
                   "runtime", "vruntime", "tick", curtick * 1000);
 			    cprintf("%s\t\t%d\t%s\t%d\t%d\t%d\t%d\n",
