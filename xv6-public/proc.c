@@ -642,7 +642,7 @@ ps(int pid)
 			if(p->state == 0){
 				continue;
 			}
-			cprintf("%s\t\t%d\t%s\t%d\t%d\t%d\t%d\n",
+			cprintf("%s\t\t%d\t%s\t%d\t\t%d\t\t%d\t\t%d\n",
               p->name, p->pid, arr[p->state], p->nice,
               (curtick - p->starttick) * 1000 / weight[p->nice],
               (curtick - p->starttick) * 1000, p->vruntime * 1000);
