@@ -635,14 +635,14 @@ ps(int pid)
     uint curtick = ticks;
 	acquire(&ptable.lock);
 	if(pid == 0){
-		cprintf("%s\t\t%s\t%s\t\t%s\t%s\t%s\t%s\t%s %u\n",
+		cprintf("%s\t\t%s\t%s\t\t%s\t%s\t%s\t%s\t%s %d\n",
           "name", "pid", "state", "priority", "runtime/weight",
           "runtime", "vruntime", "tick", curtick * 1000);
 		for(p = ptable.proc; p < &ptable.proc[NPROC]; p++){
 			if(p->state == 0){
 				continue;
 			}
-			cprintf("%s\t\t%d\t%s\t%d\t%u\t%u\t%u\n",
+			cprintf("%s\t\t%d\t%s\t%d\t%d\t%d\t%d\n",
               p->name, p->pid, arr[p->state], p->nice,
               (curtick - p->starttick) * 1000 / weight[p->nice],
               (curtick - p->starttick) * 1000, p->vruntime * 1000);
@@ -656,7 +656,7 @@ ps(int pid)
 				cprintf("%s\t\t%s\t%s\t\t%s\t%s\t%s\t%s\t%s %u\n",
                   "name", "pid", "state", "priority", "runtime/weight",
                   "runtime", "vruntime", "tick", curtick * 1000);
-			    cprintf("%s\t\t%d\t%s\t%d\t%u\t%u\t%u\n",
+			    cprintf("%s\t\t%d\t%s\t%d\t%d\t%d\t%d\n",
                   p->name, p->pid, arr[p->state], p->nice,
                   (curtick - p->starttick) * 1000 / weight[p->nice],
                   (curtick - p->starttick) * 1000, p->vruntime * 1000);
