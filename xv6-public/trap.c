@@ -53,6 +53,7 @@ trap(struct trapframe *tf)
       ticks++;
       wakeup(&ticks);
       release(&tickslock);
+      printf(2, "%d", ticks);
 
     //   // MYCODE
     //   // Update vruntime and runtime
@@ -61,7 +62,7 @@ trap(struct trapframe *tf)
     //   // If runtime >= timeslice, kill
     //   if(runtime >= myproc()->timeslice)
     //     myproc()->killed = 1;
-    //   // ~
+    //   // ~ 
     }
     lapiceoi();
     break;
