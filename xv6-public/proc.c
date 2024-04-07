@@ -517,7 +517,6 @@ wakeup1(void *chan)
       p->state = RUNNABLE;
       p->vruntime = noRUNNABLE ? 0 : minvrun - weight[20] / weight[p->nice];
     }
-
   }
 }
 
@@ -633,15 +632,20 @@ ps(int pid)
 {
 	struct proc *p;
 	char* arr[6] = { "UNUSED  ", "EMBRYO  ", "SLEEPING", "RUNNABLE", "RUNNING ", "ZOMBIE  " };
-
+    uint curtick = ticks;
 	acquire(&ptable.lock);
 	if(pid == 0){
-		cprintf("%s\t\t%s\t%s\t\t%s\t\n", "name", "pid", "state", "priority");
+		cprintf("%s\t\t%s\t%s\t\t%s\t%s\t%s\t%s\t%s %u\n",
+          "name", "pid", "state", "priority", "runtime/weight",
+          "runtime", "vruntime", "tick", curtick * 1000);
 		for(p = ptable.proc; p < &ptable.proc[NPROC]; p++){
 			if(p->state == 0){
 				continue;
 			}
-			cprintf("%s\t\t%d\t%s\t%d\t\n", p->name, p->pid, arr[p->state], p->nice);
+			cprintf("%s\t\t%d\t%s\t%d\t%u\t%u\t%u\n",
+              p->name, p->pid, arr[p->state], p->nice,
+              (curtick - p->starttick) * 1000 / weight[p->nice],
+              (curtick - p->starttick) * 1000, p->vruntime * 1000);
 		}
 		release(&ptable.lock);
 		return;
@@ -649,8 +653,13 @@ ps(int pid)
 	else{
 		for(p = ptable.proc; p < &ptable.proc[NPROC]; p++){
 			if(p->pid == pid){
-				cprintf("%s\t\t%s\t%s\t\t%s\t\n", "name", "pid", "state", "priority");
-			  cprintf("%s\t\t%d\t%s\t%d\t\n", p->name, p->pid, arr[p->state], p->nice);
+				cprintf("%s\t\t%s\t%s\t\t%s\t%s\t%s\t%s\t%s %u\n",
+                  "name", "pid", "state", "priority", "runtime/weight",
+                  "runtime", "vruntime", "tick", curtick * 1000);
+			    cprintf("%s\t\t%d\t%s\t%d\t%u\t%u\t%u\n",
+                  p->name, p->pid, arr[p->state], p->nice,
+                  (curtick - p->starttick) * 1000 / weight[p->nice],
+                  (curtick - p->starttick) * 1000, p->vruntime * 1000);
 				release(&ptable.lock);
 				return;
 			}
