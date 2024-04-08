@@ -4,13 +4,23 @@
 
 int main()
 {
-  char *args[] = {"./_mytest", NULL};
-  double a = 0;
-  
-  for(int i = 0; i < 100000; i++) {
-    a += i / 3.14;
+  int pid = fork();
+  setnice(pid, 20);
+  if(pid == 0) {
+    double a = 0;
+    for(int i = 0; i < 1000; i++) {
+      a += i / 3.14;
+      printf(2, "%d", a);
+    }
+    printf(2, "\n");
+    ps(0);
+    exit();
   }
-  exec(args[0], args);
-  ps(0);
+  double a = 0;
+  for(int i = 0; i < 1000; i++) {
+    a += i / 3.14;
+    printf(2, "%d", a);
+  }
+  wait();
 	exit();
 }
