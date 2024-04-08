@@ -103,6 +103,7 @@ found:
 	// MYCODE
 	p->nice = 20;
   p->vruntime = 0;
+  p->runtime = 0;
 	// ~
 
   release(&ptable.lock);
