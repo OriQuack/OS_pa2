@@ -10,7 +10,7 @@ int main()
     double a = 0;
     for(int i = 0; i < 1000; i++) {
       a += i / 3.14;
-      printf(2, "%d", a);
+      printf(2, "c");
     }
     printf(2, "\n");
     ps(0);
@@ -19,7 +19,7 @@ int main()
   double a = 0;
   for(int i = 0; i < 1000; i++) {
     a += i / 3.14;
-    printf(2, "%d", a);
+    printf(2, "p");
   }
   wait();
 	exit();

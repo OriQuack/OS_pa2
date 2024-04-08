@@ -221,7 +221,6 @@ fork(void)
   np->nice = curproc->nice;
   np->vruntime = curproc->vruntime;
   np->runtime = curproc->runtime;
-  np->schedtick = curproc->schedtick;
   // ~
 
   // Clear %eax so that fork returns 0 in the child.
