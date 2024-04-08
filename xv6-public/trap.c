@@ -55,13 +55,10 @@ trap(struct trapframe *tf)
       release(&tickslock);
 
       // MYCODE
-      if(myproc() != 0) {
+      if(myproc() != 0 && myproc()->state == RUNNING) {
         // Update vruntime and runtime
         myproc()->runtime += 1;
         myproc()->vruntime += weight[20] / weight[myproc()->nice];
-        // If runtime >= timeslice, kill
-        if(ticks - myproc()->schedtick >= myproc()->timeslice)
-          myproc()->killed = 1;
       }
       // ~ 
     }
@@ -111,10 +108,11 @@ trap(struct trapframe *tf)
   if(myproc() && myproc()->killed && (tf->cs&3) == DPL_USER)
     exit();
 
+  // +MYCODE
   // Force process to give up CPU on clock tick.
   // If interrupts were on while locks held, would need to check nlock.
   if(myproc() && myproc()->state == RUNNING &&
-     tf->trapno == T_IRQ0+IRQ_TIMER)
+     tf->trapno == T_IRQ0+IRQ_TIMER && ticks - myproc()->schedtick >= myproc()->timeslice)
     yield();
 
   // Check if the process has been killed since we yielded
