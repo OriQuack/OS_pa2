@@ -5,22 +5,22 @@
 int main()
 {
   int pid = fork();
-  setnice(pid, 20);
+  setnice(pid, 30);
   if(pid == 0) {
     double a = 0;
-    for(int i = 0; i < 1000; i++) {
+    for(int i = 0; i < 100; i++) {
       a += i / 3.14;
-      printf(2, "c");
+      printf(2, "c%d\n", i);
     }
     printf(2, "\n");
-    ps(0);
     exit();
   }
   double a = 0;
-  for(int i = 0; i < 1000; i++) {
+  for(int i = 0; i < 100; i++) {
     a += i / 3.14;
-    printf(2, "p");
+    printf(2, "p%d\n", i);
   }
+  ps(0);
   wait();
 	exit();
 }
