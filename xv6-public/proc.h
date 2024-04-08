@@ -58,7 +58,8 @@ struct proc {
 	int nice;
   uint vruntime;
   uint timeslice;
-  uint starttick;
+  uint schedtick;
+  uint runtime;
 	// ~
 };
 

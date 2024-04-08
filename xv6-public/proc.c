@@ -219,7 +219,8 @@ fork(void)
   // MYCODE
   np->nice = curproc->nice;
   np->vruntime = curproc->vruntime;
-  np->starttick = curproc->starttick;
+  np->runtime = curproc->runtime;
+  np->schedtick = curproc->schedtick;
   // ~
 
   // Clear %eax so that fork returns 0 in the child.
@@ -378,7 +379,7 @@ scheduler(void)
     
     // update timeslice and start tick of selected process
     selp->timeslice = 10 * weight[selp->nice] / totalweight;
-    selp->starttick = curtick;
+    selp->schedtick = curtick;
 
     // Switch to chosen process.  It is the process's job
     // to release ptable.lock and then reacquire it
@@ -630,43 +631,42 @@ setnice(int pid, int value)
 void
 ps(int pid)
 {
-	struct proc *p;
-	char* arr[6] = { "UNUSED  ", "EMBRYO  ", "SLEEPING", "RUNNABLE", "RUNNING ", "ZOMBIE  " };
-    uint curtick = ticks;
-	acquire(&ptable.lock);
-	if(pid == 0){
-		cprintf("%s\t\t%s\t%s\t\t%s\t%s\t%s\t\t%s\t%s %d\n",
-          "name", "pid", "state", "priority", "runtime/weight",
-          "runtime", "vruntime", "tick", curtick * 1000);
-		for(p = ptable.proc; p < &ptable.proc[NPROC]; p++){
-			if(p->state == 0){
-				continue;
-			}
-			cprintf("%s\t\t%d\t%s\t%d\t\t%d\t\t%d\t\t%d\n",
+  struct proc *p;
+  char *arr[6] = {"UNUSED  ", "EMBRYO  ", "SLEEPING", "RUNNABLE", "RUNNING ", "ZOMBIE  "};
+  uint curtick = ticks;
+  acquire(&ptable.lock);
+  if (pid == 0) {
+    cprintf("%s\t\t%s\t%s\t\t%s\t%s\t%s\t\t%s\t%s %d\n",
+            "name", "pid", "state", "priority",
+            "runtime/weight", "runtime", "vruntime", "tick", curtick * 1000);
+    for (p = ptable.proc; p < &ptable.proc[NPROC]; p++) {
+      if (p->state == 0) {
+        continue;
+      }
+      cprintf("%s\t\t%d\t%s\t%d\t\t%d\t\t%d\t\t%d\n",
               p->name, p->pid, arr[p->state], p->nice,
-              (curtick - p->starttick) * 1000 / weight[p->nice],
-              (curtick - p->starttick) * 1000, p->vruntime * 1000);
-		}
-		release(&ptable.lock);
-		return;
-	}
-	else{
-		for(p = ptable.proc; p < &ptable.proc[NPROC]; p++){
-			if(p->pid == pid){
-				cprintf("%s\t\t%s\t%s\t\t%s\t%s\t%s\t\t%s\t%s %d\n",
-                  "name", "pid", "state", "priority", "runtime/weight",
-                  "runtime", "vruntime", "tick", curtick * 1000);
-			    cprintf("%s\t\t%d\t%s\t%d\t%d\t%d\t%d\n",
-                  p->name, p->pid, arr[p->state], p->nice,
-                  (curtick - p->starttick) * 1000 / weight[p->nice],
-                  (curtick - p->starttick) * 1000, p->vruntime * 1000);
-				release(&ptable.lock);
-				return;
-			}
-		}
-	}
-	release(&ptable.lock);
-	return;
+              p->runtime * 1000 / weight[p->nice], p->runtime * 1000, 
+              p->vruntime * 1000);
+    }
+    release(&ptable.lock);
+    return;
+  } 
+  else {
+    for (p = ptable.proc; p < &ptable.proc[NPROC]; p++) {
+      if (p->pid == pid) {
+        cprintf("%s\t\t%s\t%s\t\t%s\t%s\t%s\t\t%s\t%s %d\n", 
+                "name", "pid", "state", "priority",
+                "runtime/weight", "runtime", "vruntime", "tick", curtick * 1000);
+        cprintf("%s\t\t%d\t%s\t%d\t%d\t%d\t%d\n", 
+                p->name, p->pid, arr[p->state], p->nice,
+                p->runtime * 1000 / weight[p->nice], p->runtime * 1000, 
+                p->vruntime * 1000);
+        release(&ptable.lock);
+        return;
+      }
+    }
+  }
+  release(&ptable.lock);
+  return;
 }
-
 // ~

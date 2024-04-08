@@ -57,10 +57,10 @@ trap(struct trapframe *tf)
       // MYCODE
       if(myproc() != 0) {
         // Update vruntime and runtime
-        uint runtime = ticks - myproc()->starttick;
+        myproc()->runtime += 1;
         myproc()->vruntime += weight[20] / weight[myproc()->nice];
         // If runtime >= timeslice, kill
-        if(runtime >= myproc()->timeslice)
+        if(ticks - myproc()->schedtick >= myproc()->timeslice)
           myproc()->killed = 1;
       }
       // ~ 
