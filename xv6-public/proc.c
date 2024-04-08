@@ -376,6 +376,7 @@ scheduler(void)
       continue;
     }
     
+    // update timeslice and start tick of selected process
     selp->timeslice = 10 * weight[selp->nice] / totalweight;
     selp->starttick = curtick;
 
@@ -394,7 +395,6 @@ scheduler(void)
     c->proc = 0;
     
     release(&ptable.lock);
-
   }
 }
 

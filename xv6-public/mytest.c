@@ -4,6 +4,10 @@
 
 int main()
 {
-	ps(0);
+  double a = 0;
+  for(int i = 0; i < 10000; i++) {
+    a += i * 3.14;
+  }
+  ps(0);
 	exit();
 }
