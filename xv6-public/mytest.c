@@ -8,7 +8,7 @@ int main()
   setnice(pid, 30);
   if(pid == 0) {
     double a = 0;
-    for(int i = 0; i < 100; i++) {
+    for(int i = 0; i < 200; i++) {
       a += i / 3.14;
       printf(2, "c%d\n", i);
     }
@@ -16,7 +16,7 @@ int main()
     exit();
   }
   double a = 0;
-  for(int i = 0; i < 100; i++) {
+  for(int i = 0; i < 200; i++) {
     a += i / 3.14;
     printf(2, "p%d\n", i);
   }
