@@ -58,7 +58,7 @@ trap(struct trapframe *tf)
       if(myproc() != 0 && myproc()->state == RUNNING) {
         // Update vruntime and runtime
         myproc()->runtime += 1;
-        myproc()->vruntime += weight[20] / weight[myproc()->nice];
+        myproc()->vruntime += 1024 / weight[myproc()->nice];
       }
       // ~ 
     }

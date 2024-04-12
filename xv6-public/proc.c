@@ -28,7 +28,7 @@ const int weight[40] = {
   423, 335, 272, 215, 172, 137, 110, 87,
   70, 56, 45, 36, 29, 23, 18, 15 
 };
-const uint MAX_UINT = 4294967295;
+const uint MAX_UINT = 2147483647;
 // ~
 
 void
@@ -356,8 +356,7 @@ scheduler(void)
     // +MYCODE
     int totalweight = 0;
     uint minvrt = MAX_UINT;
-    uint curtick = ticks;
-    // Loop over process table looking for process to run.
+    // Loop over process table looking for process with min vruntime.
     acquire(&ptable.lock);
     struct proc *selp = ptable.proc;
     for(p = ptable.proc; p < &ptable.proc[NPROC]; p++){
@@ -379,13 +378,16 @@ scheduler(void)
     
     // update timeslice and start tick of selected process
     selp->timeslice = 10 * weight[selp->nice] / totalweight;
-    selp->schedtick = curtick;
 
     // Switch to chosen process.  It is the process's job
     // to release ptable.lock and then reacquire it
     // before jumping back to us.
     c->proc = selp;
     switchuvm(selp);
+    acquire(&tickslock);
+    selp->schedtick = ticks;
+    release(&tickslock);
+
     selp->state = RUNNING;
 
     swtch(&(c->scheduler), selp->context);
