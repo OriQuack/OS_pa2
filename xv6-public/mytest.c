@@ -5,10 +5,11 @@
 int main()
 {
   int pid = fork();
-  setnice(pid, 30);
+  setnice(pid, 20);
   if(pid == 0) {
     double a = 0;
-    for(int i = 0; i < 200; i++) {
+    for(int i = 0; i < 500; i++) {
+      if(i == 300) ps(0);
       a += i / 3.14;
       printf(2, "c%d\n", i);
     }
@@ -16,7 +17,7 @@ int main()
     exit();
   }
   double a = 0;
-  for(int i = 0; i < 200; i++) {
+  for(int i = 0; i < 500; i++) {
     a += i / 3.14;
     printf(2, "p%d\n", i);
   }
