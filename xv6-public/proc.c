@@ -648,7 +648,7 @@ ps(int pid)
       cprintf("%s\t\t%d\t%s\t%d\t\t%d\t\t%d\t\t%d\n",
               p->name, p->pid, arr[p->state], p->nice,
               p->runtime * 1000 / weight[p->nice], p->runtime * 1000, 
-              p->vruntime * 1000);
+              p->vruntime);
     }
     release(&ptable.lock);
     return;
@@ -662,7 +662,7 @@ ps(int pid)
         cprintf("%s\t\t%d\t%s\t%d\t%d\t%d\t%d\n", 
                 p->name, p->pid, arr[p->state], p->nice,
                 p->runtime * 1000 / weight[p->nice], p->runtime * 1000, 
-                p->vruntime * 1000);
+                p->vruntime);
         release(&ptable.lock);
         return;
       }
