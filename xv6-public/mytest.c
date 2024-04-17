@@ -20,7 +20,7 @@
 // Driver program to test above functions
 int main()
 {
-    int n = 1000;
+    int n = 10000;
     int arr[n];
     for(int i = 0; i < n; i++) {
       arr[i] = n - i;
