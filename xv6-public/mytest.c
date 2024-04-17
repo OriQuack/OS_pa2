@@ -29,11 +29,12 @@ void bubbleSort(int arr[], int n)
 // Driver program to test above functions
 int main()
 {
-    int arr[10000];
-    for(int i = 0; i < 10000; i++) {
-      arr[i] = 10000 - i;
+    int n = 1000;
+    int arr[n];
+    for(int i = 0; i < n; i++) {
+      arr[i] = n - i;
     }
-    bubbleSort(arr, 10000);
+    bubbleSort(arr, n);
     ps(0);
     exit();
 }
