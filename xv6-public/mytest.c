@@ -2,12 +2,6 @@
 #include "user.h"
 #include "stat.h"
 
-void swap(int* xp, int* yp)
-{
-    int temp = *xp;
-    *xp = *yp;
-    *yp = temp;
-}
 
 // An optimized version of Bubble Sort
 void bubbleSort(int arr[], int n)
@@ -18,7 +12,9 @@ void bubbleSort(int arr[], int n)
         swapped = 0;
         for (j = 0; j < n - i - 1; j++) {
             if (arr[j] > arr[j + 1]) {
-                swap(&arr[j], &arr[j + 1]);
+                int temp = arr[j];
+                arr[j] = arr[j+1];
+                arr[j+1] = temp;
                 swapped = 1;
             }
         }
