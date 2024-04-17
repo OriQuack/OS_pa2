@@ -518,7 +518,7 @@ wakeup1(void *chan)
   for(p = ptable.proc; p < &ptable.proc[NPROC]; p++){
     if(p->state == SLEEPING && p->chan == chan){
       p->state = RUNNABLE;
-      p->vruntime = noRUNNABLE ? 0 : minvrun - weight[20] / weight[p->nice];
+      p->vruntime = noRUNNABLE ? 0 : minvrun - 1000 * weight[20] / weight[p->nice];
     }
   }
 }
